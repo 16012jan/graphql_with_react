@@ -7,6 +7,7 @@ const {
   GraphQLList,
   GraphQLInt,
   GraphQLSchema,
+  GraphQLNonNull
 } = graphql;
 
 const CompanyType = new GraphQLObjectType({
@@ -76,6 +77,16 @@ const mutation = new GraphQLObjectType({
       },
       resolve(parentValue, {firstName, age}) {
         return axios.post(`http://localhost:3000/users`, {firstName, age})
+          .then(response => response.data);
+      }
+    },
+    deleteUser: {
+      type: UserType,
+      args: {
+        id: {type: new GraphQLNonNull(GraphQLString)}
+      },
+      resolve(parentValue, args){
+        return axios.delete(`http://localhost:3000/users/${args.id}`)
           .then(response => response.data);
       }
     }
